@@ -1,0 +1,45 @@
+Dynamic Arp Inspection + DHCP Snooping :
+R1 :
+en
+conf t
+int f0/0
+no shut
+ip address 10.1.1.1 255.255.255.0
+end
+SW1 :
+en
+conf t
+int vlan 1
+no shut
+ip address 10.1.1.2 255.255.255.0
+end
+conf t
+ip dhcp excluded-address 10.1.1.1 10.1.1.10
+ip dhcp pool IRIS_POOL1
+network 10.1.1.0 255.255.255.0
+default-router 10.1.1.1
+end
+show run | s dhcp
+conf t
+ip dhcp snooping
+ip dhcp snooping vlan 1
+end
+show ip dhcp snooping binding
+------------------------------- PC request IP
+SW1 :
+show ip dhcp snooping binding
+conf t
+ip arp inspection vlan 1
+ip arp inspection validate src-mac dst-mac ip
+end
+show ip arp inspection
+show run | s arp
+-------------------------------------PORT SECURITY
+Port sécurity :
+SW1 : 
+interface G0/1
+switchport mode access
+switchport port-security
+switchport port-security mac-address sticky
+switchport port-security violation shutdown
+------------------------------------------ FINITO PIPO 
